@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/google/wire"
-	"github.com/mehmetkmrc/altor_gold/internal/core/domain/entity"
-	"github.com/mehmetkmrc/altor_gold/internal/core/port/db"
-	"github.com/mehmetkmrc/altor_gold/internal/core/port/user"
+	"github.com/mehmetkmrc/ator_gold/internal/core/domain/entity"
+	"github.com/mehmetkmrc/ator_gold/internal/core/port/db"
+	"github.com/mehmetkmrc/ator_gold/internal/core/port/user"
 	"golang.org/x/crypto/bcrypt"
 )
 

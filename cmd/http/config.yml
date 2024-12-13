@@ -1,5 +1,5 @@
 app:
-  name: 'altor_gold'
+  name: 'ator_gold'
 
 log:
   level: 1
@@ -12,7 +12,7 @@ rabbitmq:
   url: 'amqp://guest:guest@localhost:5672/'
 
 psql:
-  url: 'postgres://postgres:ITM-2020@localhost:5432/altor_gold?sslmode=disable'
+  url: 'postgres://postgres:ITM-2020@localhost:5432/ator_gold?sslmode=disable'
 
 token:
   token_ttl: 60m
