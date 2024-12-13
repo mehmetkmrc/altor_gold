@@ -1,0 +1,24 @@
+app:
+  name: 'altor_gold'
+
+log:
+  level: 1
+
+http:
+  host: 'localhost'
+  port: 8080
+
+rabbitmq:
+  url: 'amqp://guest:guest@localhost:5672/'
+
+psql:
+  url: 'postgres://postgres:ITM-2020@localhost:5432/altor_gold?sslmode=disable'
+
+token:
+  token_ttl: 60m
+  refresh_ttl: 120m
+
+settings:
+  server_read_timeout: 5
+  psql_conn_attempts: 5
+  psql_conn_timeout: 2
