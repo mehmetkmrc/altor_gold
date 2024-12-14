@@ -1,4 +1,38 @@
-<!-- Document Wrapper
+<!DOCTYPE html>
+<html dir="ltr" lang="en-US">
+<head>
+
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<meta http-equiv="x-ua-compatible" content="IE=edge">
+	<meta name="author" content="SemiColonWeb">
+	<meta name="description" content="Create Jewellery Design, Showcase &amp; Boutique Websites with Canvas Template. Get Canvas to build powerful websites easily with the Highly Customizable &amp; Best Selling Bootstrap Template, today.">
+
+	<!-- Font Imports -->
+	<link rel="stylesheet" href="https://use.typekit.net/vgf0rfn.css">
+
+	<!-- Core Style -->
+	<link type="text/css" rel="stylesheet" href="/css/style.css">
+
+	<!-- Font Icons -->
+	<link type="text/css" rel="stylesheet" href="/css/font-icons.css">
+ 
+	<!-- Niche Demos -->
+	<link rel="stylesheet" href="/demos/jewellery-boutique/jewellery-boutique.css"> <!-- jewellery-boutique Custom Css -->
+
+	<!-- Custom CSS -->
+	<link rel="stylesheet" href="/css/custom.css">
+    <link rel="stylesheet" href="/css/media.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/images/ator_gold.jpg">
+	<!-- Document Title
+	============================================= -->
+	<title>{{.Title}}</title>
+
+</head>
+
+<body class="stretched">
+
+	<!-- Document Wrapper
 	============================================= -->
 	<div id="wrapper">
 
@@ -206,25 +240,34 @@
 
 		<!-- Hero
 		============================================= -->
-		<section id="slider" class="slider-element min-vh-md-100 min-vh-75 include-header">
-			<div class="slider-inner" style="background-image: url('demos/jewellery-boutique/images/hero.jpg');background-position: 50% 50%;"  data-0-top="background-size: 100%" data-top-bottom="background-size: 120%">
-				<div class="container">
-
-					<div class="vertical-middle">
-						<div class="row mt-6">
-							<div class="col-md-5">
-								<div class="before-title text-uppercase ls-3 mb-5 text-dark text-smaller">Your Best Boutique</div>
-								<h2 class="display-4 fw-light ls-1 lh-sm">Give the Best Gift to your <span class="fw-normal">loved</span> ones.</h2>
-
-								<a href="#" class="canvas-button mt-5"><span><span>Explore Now</span></span></a>
-							</div>
-						</div>
-					</div>
-
-				</div>
-			</div>
-		</section>
-
+        <section id="slider" class="slider-element min-vh-md-100 min-vh-75 include-header">
+            <div class="slider-inner" style="position: relative; height: 110vh; width: 100vw; overflow: hidden;">
+                <!-- Video Background -->
+                <div class="video-wrap no-placeholder" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;">
+                    <video poster="demos/jewellery-boutique/images/video-poster.jpg" preload="auto" loop autoplay muted playsinline style="width: 100%; height: 100%; object-fit: cover;">
+                        <source src="demos/jewellery-boutique/images/hero.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <!-- Content Section -->
+                <div class="container" style="position: relative; z-index: 2;">
+                    <div class="vertical-middle">
+                        <div class="row mt-6">
+                            <div class="col-md-5">
+                                <div class="before-title text-uppercase ls-3 mb-5 text-dark text-smaller">Your Best Boutique</div>
+                                <h2 class="display-4 fw-light ls-1 lh-sm">Give the Best Gift to your <span class="fw-normal">loved</span> ones.</h2>
+                                <a href="#" class="canvas-button mt-5"><span><span>Explore Now</span></span></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="video-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.1); z-index: 1;"></div>
+            </div>
+        </section>
+        
+        
+        
+        
+        
 		<!-- Content
 		============================================= -->
 		<section id="content">
@@ -407,7 +450,7 @@
 									</div>
 
 								</div>
-								<div class="canvas-cursor"><i class="fa-solid fa-caret-left"></i><div class="canvas-cursor-text">Drag</div><i class="fa-solid fa-caret-right"></i></div>
+								<div class="canvas-cursor"><i class="fa-solid fa-caret-left"></i><div class="canvas-cursor-text">Sürükle</div><i class="fa-solid fa-caret-right"></i></div>
 							</div>
 						</div>
 					</div>
@@ -684,3 +727,26 @@
 	<!-- Go To Top
 	============================================= -->
 	<div id="gotoTop" class="uil uil-angle-double-up rounded-circle"></div>
+
+	<!-- JavaScripts
+	============================================= -->
+	<script src="/js/plugins.min.js"></script>
+	<script src="/js/functions.bundle.js"></script>
+
+	<!-- Parallax Script
+	============================================= -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/skrollr/0.6.30/skrollr.min.js"></script>
+	<script>!SEMICOLON.Mobile.any() && skrollr.init({forceHeight: false});</script>
+
+	<!-- Hover Image Animate -->
+	<script src="/demos/jewellery-boutique/js/hover-img-animate.js"></script>
+
+	<!-- Circle Rotate JS -->
+	<script src="https://cdn.jsdelivr.net/npm/circletype@2.3.0/dist/circletype.min.js"></script>
+
+	<!-- Custom Scripts - Jewellery boutique related
+	============================================= -->
+	<script src="/demos/jewellery-boutique/js/custom.js"></script>
+
+</body>
+</html>
