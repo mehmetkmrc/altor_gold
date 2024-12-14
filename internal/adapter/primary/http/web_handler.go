@@ -21,7 +21,7 @@ func (s *server) HomeWeb(c fiber.Ctx) error {
 }
 
 func (s *server) AboutWeb(c fiber.Ctx) error {
-	path := "about"
+	path := "about-us"
 	return c.Render(path, fiber.Map{
 		"Title": "Hakkımızda",
 	})
