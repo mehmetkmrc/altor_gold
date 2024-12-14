@@ -16,7 +16,7 @@ func (s *server) LoginWeb(c fiber.Ctx) error {
 func (s *server) HomeWeb(c fiber.Ctx) error {
 	path := "home"
 	return c.Render(path, fiber.Map{
-		"Title": "Kömürcü Emlak - Anasayfa",
+		"Title": "Ator Gold - Anasayfa",
 	})
 }
 
@@ -60,7 +60,7 @@ func (s *server) ListingWeb(c fiber.Ctx) error {
 	})
 }
 func (s *server) ProjectWeb(c fiber.Ctx) error {
-	path := "projects"
+	path := "products"
 	return c.Render(path, fiber.Map{
 		"Title": "Projeler",
 	})
