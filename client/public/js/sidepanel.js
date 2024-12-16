@@ -21,6 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (position === 'left') {
             body.classList.add(
                 'side-panel-left',
+                'device-down-xxl',
+                'device-lg',
+                'device-down-xl',
                 'device-up-lg',
                 'device-up-md',
                 'device-up-sm',
@@ -35,13 +38,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 'vsc-initialized',
                 'has-plugin-tips',
                 'init-plugin-tips',
-                'side-panel-open',
                 'has-plugin-notify',
+                'side-panel-open',
                 'has-plugin-html5video',
-                'device-down-xxl',
-                'device-lg',
-                'device-down-xl',
-                'side-panel-open'
             );
             
         } else if (position === 'right') {
