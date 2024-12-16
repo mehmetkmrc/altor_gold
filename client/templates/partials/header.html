@@ -5,13 +5,29 @@
 				<div class="container">
 					<div class="header-row">
 
+
+						
+
+							<div id="top-bi-list" class="header-misc-icon ms-3 ms-lg-4">
+								<a href="" class="side-panel-trigger"><i class="bi bi-list"></i></a>
+								{{template "partials/catalog" .}}
+							</div>
+
+						
+
+						<div class="primary-menu-trigger ms-1">
+							<button class="cnvs-hamburger" type="button" title="Open Mobile Menu">
+								<span class="cnvs-hamburger-box"><span class="cnvs-hamburger-inner"></span></span>
+							</button>
+						</div>
 						<!-- Logo
 						============================================= -->
-						<div id="logo">
+						<!-- <div id="logo">
 							<a href="demo-jewellery-boutique.html">
 								<img class="logo-default" srcset="demos/jewellery-boutique/images/logo.png, demos/jewellery-boutique/images/logo@2x.png 2x" src="demos/jewellery-boutique/images/logo@2x.png" alt="Canvas Logo">
 							</a>
-						</div><!-- #logo end -->
+						</div> -->
+						<!-- #logo end -->
 
 						<div class="header-misc">
 
@@ -48,7 +64,13 @@
 										<a href="#" class="canvas-button canvas-button-sm px-3 py-2 m-0"><span><span>View Cart</span></span></a>
 									</div>
 								</div>
-							</div><!-- #top-cart end -->
+							</div>
+							<!-- #top-cart end -->
+
+							<div id="top-uil-user" class="header-misc-icon ms-3 ms-lg-4">
+								<a href="#" class="side-panel-trigger"><i class="uil uil-user"></i></a>
+								{{template "partials/side-panel" .}}
+							</div>
 
 						</div>
 
@@ -60,7 +82,7 @@
 
 						<!-- Primary Navigation
 						============================================= -->
-						<nav class="primary-menu me-lg-auto not-dark">
+						<nav class="primary-menu me-lg-auto">
 
 							<ul class="menu-container">
 								<li class="menu-item mega-menu mega-menu-full">
@@ -198,5 +220,7 @@
 				</div>
 			</div>
 			<div class="header-wrap-clone"></div>
+			
+			
 		</header>
         <!-- #header end -->
