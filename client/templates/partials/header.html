@@ -7,10 +7,12 @@
 
 
 						
-
+						
 							<div id="top-bi-list" class="header-misc-icon ms-3 ms-lg-4">
-								<a href="" class="side-panel-trigger"><i class="bi bi-list"></i></a>
-								{{template "partials/catalog" .}}
+								<div id="left-panel-trigger">
+									<a href="" class="side-panel-trigger" id="enable-js-access"><i class="bi bi-list"></i></a>
+									{{template "partials/catalog" .}}
+								</div>
 							</div>
 
 						
@@ -68,8 +70,10 @@
 							<!-- #top-cart end -->
 
 							<div id="top-uil-user" class="header-misc-icon ms-3 ms-lg-4">
-								<a href="#" class="side-panel-trigger"><i class="uil uil-user"></i></a>
-								{{template "partials/side-panel" .}}
+								<div id="right-panel-trigger">
+									<a href="#" id="enable-js-access" class="side-panel-trigger"><i class="uil uil-user"></i></a>
+									{{template "partials/side-panel" .}}
+								</div>
 							</div>
 
 						</div>
