@@ -82,3 +82,4 @@ var circularText = document.getElementsByClassName("circular-text-rotate");
 [].forEach.call( circularText, function( element ) {
     var circleType = new CircleType( element ).radius(80);
 });
+
