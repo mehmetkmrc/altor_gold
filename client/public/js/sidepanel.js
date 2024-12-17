@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
 
         const body = document.body;
-        const sidePanel = document.getElementById('side-panel');
+        
 
         // Reset classes to avoid conflicts
         body.className = 'stretched';

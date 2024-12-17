@@ -75,3 +75,24 @@ func (s *server) DashboardWeb(c fiber.Ctx) error {
 		"Title": "Dashboard",
 	})
 }
+
+func (s *server) ProductsListWeb(c fiber.Ctx) error {
+	path := "product-list"
+	return c.Render(path, fiber.Map{
+		"Title": "Ürün listesi",
+	})
+}
+
+func (s *server) ProductSingleWeb(c fiber.Ctx) error {
+	path := "product-single"
+	return c.Render(path, fiber.Map{
+		"Title": "Tekli Ürün",
+	})
+}
+
+func (s *server) AddProductWeb(c fiber.Ctx) error {
+	path := "add-product"
+	return c.Render(path, fiber.Map{
+		"Title": "Ürün Ekle",
+	})
+}
