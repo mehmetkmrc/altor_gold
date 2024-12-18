@@ -20,16 +20,7 @@ func (s *server) webSetUp() {
 	s.app.Get("/products", s.ProductsListWeb)
 	s.app.Get("/product-single", s.ProductSingleWeb)
 	s.app.Get("/add-product", s.AddProductWeb)
-	s.app.Get("/blog-single", s.BlogSingleWeb)
-	s.app.Get("/blogs", s.BlogsWeb)
-	s.app.Get("/listing-single", s.ListingSingle)
-	s.app.Get("/listing", s.ListingWeb)
-	s.app.Get("/projects", s.ProjectWeb)
-
-	
-	// s.app.Get("/", func(c fiber.Ctx) error{
-	// 	return c.Redirect().To("/login")
-	// })
+		
 	s.app.Get("/ping", func(c fiber.Ctx) error{
 		return c.SendString("Pong")
 	})
