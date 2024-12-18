@@ -14,7 +14,7 @@ type SubDocument struct {
 	SubMessage string `json:"sub_message"`//Ürün Özellikleri
 	Asset [][]byte		`json:"asset"`
 	Position uint8		`json:"position"`
-	Status	uint 		`json:"status"`
+	Status	uint8 		`json:"status"`
 	Date 	time.Time 	`json:"date"`
 	ContentDocuments []*ContentDocument `json:"content_documents"`
 }

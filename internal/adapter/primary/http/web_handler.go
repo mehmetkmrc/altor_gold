@@ -1,9 +1,18 @@
 package http
 
 import (
+	"encoding/base64"
+	"time"
+
 	"github.com/gofiber/fiber/v3"
-	
 )
+
+
+var year = time.Now().Year()
+func encodeBase64(data []byte) string {
+	return base64.StdEncoding.EncodeToString(data)
+}
+
 
 func (s *server) LoginWeb(c fiber.Ctx) error {
 	path := "login"
@@ -95,4 +104,27 @@ func (s *server) AddProductWeb(c fiber.Ctx) error {
 	return c.Render(path, fiber.Map{
 		"Title": "Ürün Ekle",
 	})
+}
+
+
+func (s *server) uploadHandler(c fiber.Ctx) error {
+    allDocuments, err := s.documentService.GetAllDocumentsWithMainDocument(c.Context())
+    if err != nil {
+        return s.errorResponse(c, "error while trying to get all documents", err, nil, fiber.StatusBadRequest)
+    }
+    var mainDocs []interface{}
+
+    for _, document := range allDocuments {
+        mainDoc := map[string]interface{}{
+            "id":    document.ID,
+            "title": document.MainTitle,
+        }
+        mainDocs = append(mainDocs, mainDoc)
+    }
+	return c.Render("upload", fiber.Map{
+		"PageTitle": "Upload Page",
+		"Title":     "Welcome to Otovinn App!",
+		"Year":      year,
+        "AllDocuments": mainDocs,
+	}, "layouts/main")
 }

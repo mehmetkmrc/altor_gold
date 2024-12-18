@@ -26,7 +26,7 @@ func NewMainDocumentRepository(em db.EngineMaker) documenter.MainDocumentReposit
 	}
 }
 func (q *MainDocumentRepository) Insert(ctx context.Context, documentModel *model.MainDocument) (*model.MainDocument, error) {
-	query := `INSERT INTO doc_main (id, main_title, status, date) VALUES ($1, $2, $3, $4) RETURNING id, main_title, status, date`
+	query := `INSERT INTO doc_main (id, title, status,  date) VALUES ($1, $2, $3, $4) RETURNING id, title, status, date`
 	queryRow := q.dbPool.QueryRow(ctx, query, documentModel.ID, documentModel.MainTitle, documentModel.Status, documentModel.Date)
 	err := queryRow.Scan(&documentModel.ID, &documentModel.MainTitle, &documentModel.Status, &documentModel.Date)
 	if err != nil {
@@ -58,7 +58,7 @@ func (q *MainDocumentRepository) GetAllDocumentsByJoin(ctx context.Context) ([]*
 	rows, err := q.dbPool.Query(ctx, `
         SELECT 
             dm.id as main_id, 
-            dm.title, 
+            dm.title as main_title, 
             dm.position as main_position, 
             dm.status as main_status, 
             dm.date as main_date,
