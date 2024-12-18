@@ -25,9 +25,9 @@ func NewSubDocumentRepository(em db.EngineMaker) documenter.SubDocumentRepositor
 }
 
 func (q *SubDocumentRepository) Insert(ctx context.Context, documentModel *model.SubDocument) (*model.SubDocument, error) {
-	query := `INSERT INTO doc_sub (id, main_id, product_code, sub_message, asset, status, date) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, main_id, product_code, sub_message, asset, status, date`
-	queryRow := q.dbPool.QueryRow(ctx, query, documentModel.ID, documentModel.MainID, documentModel.ProductCode, documentModel.SubMessage, documentModel.Asset, documentModel.Status, documentModel.Date)
-	err := queryRow.Scan(&documentModel.ID, &documentModel.MainID, &documentModel.ProductCode, documentModel.SubMessage, &documentModel.Asset, &documentModel.Status, &documentModel.Date)
+	query := `INSERT INTO doc_sub (id, main_id, sub_title, product_code, sub_message, asset, status, date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id, main_id, sub_title, product_code, sub_message, asset, status, date`
+	queryRow := q.dbPool.QueryRow(ctx, query, documentModel.ID, documentModel.MainID, documentModel.SubTitle, documentModel.ProductCode, documentModel.SubMessage, documentModel.Asset, documentModel.Status, documentModel.Date)
+	err := queryRow.Scan(&documentModel.ID, &documentModel.MainID, &documentModel.SubTitle, &documentModel.ProductCode, &documentModel.SubMessage, &documentModel.Asset, &documentModel.Status, &documentModel.Date)
 	if err != nil {
 		return nil, err
 	}

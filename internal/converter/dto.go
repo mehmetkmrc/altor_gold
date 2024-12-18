@@ -36,6 +36,8 @@ func SubDocumentCreateRequestToModel(req *dto.SubDocumentCreateRequest)(*model.S
 	subDocument = &model.SubDocument{
 		ID: ID,
 		MainID: mainID,
+		SubTitle: req.SubTitle,
+		ProductCode: req.ProductCode,
 		SubMessage: req.SubMessage,
 		Asset: req.Asset,
 		Date: time.Now(),
