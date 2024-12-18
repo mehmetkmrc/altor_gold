@@ -2,10 +2,11 @@ package psql
 
 import (
 	"context"
-	"database/sql"
+
 	"time"
 
 	"github.com/google/wire"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/mehmetkmrc/ator_gold/internal/core/domain/entity"
 	"github.com/mehmetkmrc/ator_gold/internal/core/port/db"
 	"github.com/mehmetkmrc/ator_gold/internal/core/port/user"
@@ -16,7 +17,7 @@ var UserRepoSet = wire.NewSet(NewUserRepository)
 
 type(
 	UserRepository struct{
-		db *sql.DB
+		db *pgxpool.Pool
 	}
 )
 
@@ -28,12 +29,12 @@ func NewUserRepository(db db.EngineMaker) user.UserRepositoryPort {
 
 func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*entity.User, error){
 	userQuery := struct {
-		UserID		  sql.NullString
-		Name	  sql.NullString
-		Surname   sql.NullString
-		Email	  sql.NullString
-		Password  sql.NullString
-		CreatedAt sql.NullTime
+		UserID		  string
+		Name	  	  string
+		Surname   	  string
+		Email	  	  string
+		Password  	  string
+		CreatedAt 	  time.Time
 	}{}
 	query := `
 	SELECT CAST(user_id AS VARCHAR(64)) as ID, 
@@ -47,30 +48,30 @@ func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*entity.
   		AND password IS NOT NULL 
   		AND email IS NOT NULL;
 	`
-	err := r.db.QueryRowContext(ctx, query, email).Scan(&userQuery.UserID, &userQuery.Name, &userQuery.Surname, &userQuery.Email, &userQuery.Password, &userQuery.CreatedAt)
+	err := r.db.QueryRow(ctx, query, email).Scan(&userQuery.UserID, &userQuery.Name, &userQuery.Surname, &userQuery.Email, &userQuery.Password, &userQuery.CreatedAt)
 	if err != nil{
 		return nil, err
 	}
 
 	userData := &entity.User{
-		UserID:    userQuery.UserID.String,
-		Name:      userQuery.Name.String,
-		Surname:   userQuery.Surname.String,
-		Email:     userQuery.Email.String,
-		Password:  userQuery.Password.String,
-		CreatedAt: userQuery.CreatedAt.Time,
+		UserID:    userQuery.UserID,
+		Name:      userQuery.Name,
+		Surname:   userQuery.Surname,
+		Email:     userQuery.Email,
+		Password:  userQuery.Password,
+		CreatedAt: userQuery.CreatedAt,
 	}
 	return userData, nil
 }
 
 func (r *UserRepository) GetByID(ctx context.Context, id string) (*entity.User, error) {
 	userQuery := struct {
-		UserID        sql.NullString
-		Name      sql.NullString
-		Surname   sql.NullString
-		Email     sql.NullString
-		Password  sql.NullString
-		CreatedAt sql.NullTime
+		UserID        string
+		Name      	  string
+		Surname   	  string
+		Email     	  string
+		Password  	  string
+		CreatedAt 	  time.Time
 	}{}
 	query := `SELECT CAST(user_id AS VARCHAR(64)) as UserID, 
        first_name, 
@@ -83,18 +84,18 @@ func (r *UserRepository) GetByID(ctx context.Context, id string) (*entity.User, 
   		AND password IS NOT NULL 
   		AND email IS NOT NULL;
 	`
-	err := r.db.QueryRowContext(ctx, query, id).Scan(&userQuery.UserID, &userQuery.Name, &userQuery.Surname, &userQuery.Email, &userQuery.Password, &userQuery.CreatedAt)
+	err := r.db.QueryRow(ctx, query, id).Scan(&userQuery.UserID, &userQuery.Name, &userQuery.Surname, &userQuery.Email, &userQuery.Password, &userQuery.CreatedAt)
 	if err != nil {
 		return nil, err
 	}
 
 	userData := &entity.User{
-		UserID:    userQuery.UserID.String,
-		Name:      userQuery.Name.String,
-		Surname:   userQuery.Surname.String,
-		Email:     userQuery.Email.String,
-		Password:  userQuery.Password.String,
-		CreatedAt: userQuery.CreatedAt.Time,
+		UserID:    userQuery.UserID,
+		Name:      userQuery.Name,
+		Surname:   userQuery.Surname,
+		Email:     userQuery.Email,
+		Password:  userQuery.Password,
+		CreatedAt: userQuery.CreatedAt,
 	}
 	return userData, nil
 }
@@ -105,7 +106,7 @@ func (r *UserRepository) GetUserPassword(ctx context.Context, email string) (str
 	FROM users 
 	WHERE email = $1;
 	`
-	err := r.db.QueryRowContext(ctx, query, email).Scan(&password)
+	err := r.db.QueryRow(ctx, query, email).Scan(&password)
 	if err != nil {
 		return "", err
 	}
@@ -125,7 +126,7 @@ func (r *UserRepository) Create(ctx context.Context, user *entity.User) error {
 	INSERT INTO users (user_id, first_name, last_name, email, phone, password, created_at)
 	VALUES ($1, $2, $3, $4, $5, $6, $7);
 	`
-	_, err = r.db.ExecContext(ctx, query, user.UserID, user.Name, user.Surname, user.Email, user.Phone, user.Password, user.CreatedAt)
+	_, err = r.db.Exec(ctx, query, user.UserID, user.Name, user.Surname, user.Email, user.Phone, user.Password, user.CreatedAt)
 	if err != nil {
 		return err
 	}

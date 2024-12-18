@@ -6,7 +6,9 @@ import (
 
 	"github.com/mehmetkmrc/ator_gold/internal/adapter/secondary/config"
 	"github.com/mehmetkmrc/ator_gold/internal/core/port/auth"
+	"github.com/mehmetkmrc/ator_gold/internal/core/port/cache"
 	"github.com/mehmetkmrc/ator_gold/internal/core/port/db"
+	"github.com/mehmetkmrc/ator_gold/internal/core/port/documenter"
 	"github.com/mehmetkmrc/ator_gold/internal/core/port/http"
 	"github.com/mehmetkmrc/ator_gold/internal/core/port/user"
 	amqp "github.com/rabbitmq/amqp091-go"
@@ -20,9 +22,16 @@ type App struct {
 	AMQPConn *amqp.Connection
 	HTTP	 http.ServerMaker
 	PSQL 	 db.EngineMaker
+	MemCache cache.Memcache
+	MemCacheTTL cache.MemcacheTTL
 	TokenMaker auth.TokenMaker
+	MainRepo  documenter.MainDocumentRepositoryPort
+	SubRepo   documenter.SubDocumentRepositoryPort
+	ContentRepo documenter.ContentDocumentRepositoryPort
 	UserRepo user.UserRepositoryPort
+	DocService documenter.DocumentServicePort
 	UserService user.UserServicePort
+
 }
 
 func New(
@@ -33,8 +42,14 @@ func New(
 	http http.ServerMaker,
 	psql db.EngineMaker,
 	token auth.TokenMaker,
+	memCache cache.Memcache,
+	memcacheTTL cache.MemcacheTTL,
+	mainRepo documenter.MainDocumentRepositoryPort,
+	subRepo documenter.SubDocumentRepositoryPort,
+	contentRepo documenter.ContentDocumentRepositoryPort,
 	userRepo user.UserRepositoryPort,
 	userService user.UserServicePort,
+	docService documenter.DocumentServicePort,
 ) *App {
 	return &App{
 		rw: rw,
@@ -44,8 +59,14 @@ func New(
 		AMQPConn: amqpConn,
 		PSQL: psql,
 		TokenMaker: token,
+		MemCache: memCache,
+		MemCacheTTL: memcacheTTL,
+		MainRepo: mainRepo,
+		SubRepo: subRepo,
+		ContentRepo: contentRepo,
 		UserRepo: userRepo,
 		UserService: userService,
+		DocService: docService,
 	}
 }
 func (a *App) Run(ctx context.Context){

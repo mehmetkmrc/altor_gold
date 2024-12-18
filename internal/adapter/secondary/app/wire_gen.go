@@ -12,9 +12,11 @@ import (
 	"github.com/mehmetkmrc/ator_gold/internal/adapter/primary/rabbit"
 	"github.com/mehmetkmrc/ator_gold/internal/adapter/secondary/auth/paseto"
 	"github.com/mehmetkmrc/ator_gold/internal/adapter/secondary/config"
+	"github.com/mehmetkmrc/ator_gold/internal/adapter/secondary/storage/memcache"
 	"github.com/mehmetkmrc/ator_gold/internal/adapter/secondary/storage/psql"
 	"github.com/mehmetkmrc/ator_gold/internal/core/port/auth"
 	"github.com/mehmetkmrc/ator_gold/internal/core/port/db"
+	"github.com/mehmetkmrc/ator_gold/internal/core/port/documenter"
 	"github.com/mehmetkmrc/ator_gold/internal/core/port/http"
 	"github.com/mehmetkmrc/ator_gold/internal/core/port/user"
 	"github.com/mehmetkmrc/ator_gold/internal/core/service"
@@ -43,13 +45,19 @@ func InitApp(ctx context.Context, wg *sync.WaitGroup, rw *sync.RWMutex, cfg *con
 		return nil, nil, err
 	}
 	userServicePort := service.NewUserService(userRepositoryPort, tokenMaker)
-	serverMaker, cleanup3, err := httpServerFunc(ctx, cfg, userServicePort, tokenMaker)
+	mainDocumentRepositoryPort := psql.NewMainDocumentRepository(engineMaker)
+	subDocumentRepositoryPort := psql.NewSubDocumentRepository(engineMaker)
+	contentDocumentRepositoryPort := psql.NewContentDocumentRepository(engineMaker)
+	documentServicePort := service.NewDocumentService(mainDocumentRepositoryPort, subDocumentRepositoryPort, contentDocumentRepositoryPort)
+	serverMaker, cleanup3, err := httpServerFunc(ctx, cfg, userServicePort, tokenMaker, documentServicePort)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	app := New(rw, wg, cfg, connection, serverMaker, engineMaker, tokenMaker, userRepositoryPort, userServicePort)
+	cacheMemcache := memcache.NewMemcache()
+	memcacheTTL := memcache.NewMemcacheTTL()
+	app := New(rw, wg, cfg, connection, serverMaker, engineMaker, tokenMaker, cacheMemcache, memcacheTTL, mainDocumentRepositoryPort, subDocumentRepositoryPort, contentDocumentRepositoryPort, userRepositoryPort, userServicePort, documentServicePort)
 	return app, func() {
 		cleanup3()
 		cleanup2()
@@ -63,7 +71,7 @@ func dbEngineFunc(
 	ctx context.Context,
 	Cfg *config.Container,
 ) (db.EngineMaker, func(), error) {
-	psqlDb := psql.NewMSDB(Cfg)
+	psqlDb := psql.NewDB(Cfg)
 	err := psqlDb.Start(ctx)
 	if err != nil {
 		zap.S().Fatal("failed to start db:", err)
@@ -77,9 +85,13 @@ func httpServerFunc(
 	Cfg *config.Container, user2 user.UserServicePort,
 
 	token auth.TokenMaker,
+	docService documenter.DocumentServicePort,
 ) (http.ServerMaker, func(), error) {
-	httpServer := http2.NewHTTPServer(ctx, Cfg, user2, token)
-	httpServer.Start(ctx)
+	httpServer := http2.NewHTTPServer(ctx, Cfg, user2, token, docService)
+	err := httpServer.Start(ctx)
+	if err != nil {
+		return nil, nil, err
+	}
 	return httpServer, func() { httpServer.Close(ctx) }, nil
 }
 

@@ -47,9 +47,6 @@ func prepareApp(ctx context.Context, wg *sync.WaitGroup, rw *sync.RWMutex, cfg *
 		zap.S().Error("failed init app", errMsg)
 		<-ctx.Done()
 	}
-
-	
-
 	a.Run(ctx)
 	return cleanUp
 }

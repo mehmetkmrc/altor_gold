@@ -2,118 +2,110 @@ package psql
 
 import (
 	"context"
-	"database/sql"
-	"github.com/mehmetkmrc/ator_gold/internal/adapter/secondary/config"
+	
 	"time"
-	_ "github.com/lib/pq"
+
 	"github.com/Masterminds/squirrel"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
+	_ "github.com/lib/pq"
+	"github.com/mehmetkmrc/ator_gold/internal/adapter/secondary/config"
+	"github.com/mehmetkmrc/ator_gold/internal/core/port/db"
 	"go.uber.org/zap"
-	"fmt"
+)
+
+
+var (
+	_ db.EngineMaker = (*pdb)(nil)
 )
 
 type (
-	EngineMaker interface {
-		Start(ctx context.Context) error
-		Close(ctx context.Context) error
-		GetDB() *sql.DB
-		Execute(query string, args ...any) error
-		Query(sql string, args ...any) (*sql.Rows, error)
-		QueryRow(sql string, args ...any) *sql.Row
-	}
-
-	MSDB struct {
-		cfg          *config.Container
+	pdb struct{
+		cfg		*config.Container
 		queryBuilder *squirrel.StatementBuilderType
-		db           *sql.DB
+		pool 		*pgxpool.Pool
 	}
-
 
 )
 
-func NewMSDB(cfg *config.Container) *MSDB {
-	db := &MSDB{
+func NewDB(cfg *config.Container) db.EngineMaker {
+	psqlDB := &pdb{
 		cfg: cfg,
 	}
 	queryBuilder := squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar)
-	db.queryBuilder = &queryBuilder
+	psqlDB.queryBuilder = &queryBuilder
 
-	return db
+	return psqlDB
 }
 
-func (ms *MSDB) Start(ctx context.Context) error {
-	url := ms.getURL()
-	err := ms.connect(url)
+func (ps *pdb) Start(ctx context.Context) error {
+	url := ps.getURL()
+	err := ps.connect(ctx, url)
 	if err != nil {
-		return err
+		zap.S().Fatal("Postgres connection failed", err)
 	}
 
+	zap.S().Info("Connected to Postgres 🎉")
 	return nil
 }
 
-func (ms *MSDB) getURL() string {
-	url := ms.cfg.PSQL.URL
+func (ps *pdb) getURL() string {
+	url := ps.cfg.PSQL.URL
 	return url
 }
 
-func (ms *MSDB) connect(url string) error {
-	var lastErr error
-	for ms.cfg.Settings.PSQLConnAttempts > 0 {
-		zap.S().Info("Connecting to PSQL...")
-		ms.db, lastErr = sql.Open("postgres", url)
-
-		if lastErr == nil {
-			err := ms.ping()
-			if err == nil {
-				zap.S().Info("PSQL Pong!")
-				return nil
-			} else {
-                zap.S().Warnf("PSQL ping failed: %v", err) 
-            }
-		} else {
-            zap.S().Warnf("PSQL connection failed: %v", lastErr)
-        }
-
-		ms.cfg.Settings.PSQLConnAttempts--
-		zap.S().Warnf("PSQL connection failed, attempts left: %d", ms.cfg.Settings.PSQLConnAttempts)
-		time.Sleep(time.Duration(ms.cfg.Settings.PSQLConnTimeout) * time.Second)
-	}
-
-	return fmt.Errorf("PSQL connection failed after %d attempts", ms.cfg.Settings.PSQLConnAttempts)
-}
-
-func (ms *MSDB) ping() error {
-	if ms.db != nil {
-		if err := ms.db.Ping(); err != nil {
+func (ps *pdb) ping(ctx context.Context) error {
+	if ps.pool != nil {
+		if err := ps.pool.Ping(ctx); err != nil {
 			return err
 		}
 	}
+	zap.S().Info("Postgres is ready to serve")
 	return nil
 }
 
-func (ms *MSDB) Close(ctx context.Context) error {
-	if ms.db != nil {
-		return ms.db.Close()
+func (ps *pdb) connect(ctx context.Context, url string) error {
+	var lastErr error
+	for ps.cfg.Settings.PSQLConnAttempts > 0 {
+		zap.S().Info("Connecting to Postgres...")
+		ps.pool, lastErr = pgxpool.New(ctx, url)
+		if lastErr == nil {
+			err := ps.ping(ctx)
+			if err == nil {
+				zap.S().Info("Postgres Pong! 🐘")
+				return nil	
+			}
+		}
+
+		ps.cfg.Settings.PSQLConnAttempts--
+		zap.S().Warnf("Postgres connection failed, attempts left: %d", ps.cfg.Settings.PSQLConnAttempts)
+		time.Sleep(time.Duration(ps.cfg.Settings.PSQLConnTimeout) * time.Second)
 	}
+
+	panic("Postgres connection failed")
+}
+
+
+
+func (ps *pdb) Close(ctx context.Context) error {
+	zap.S().Info("Postgres Context is done. Shutting down server...")
+	ps.pool.Close()
 	return nil
 }
 
-func (ms *MSDB) GetDB() *sql.DB {
-	return ms.db
+func (ps *pdb) GetDB() *pgxpool.Pool {
+	return ps.pool
 }
 
-func (ms *MSDB) Execute(query string, args ...interface{}) error {
-	_, err := ms.db.Exec(query, args...)
-	if err != nil {
-		return err
-	}
-	return nil
+func (ps *pdb) Execute(ctx context.Context, query string, args ...any) error {
+	_, err := ps.pool.Exec(ctx, query, args...)
+	return err
 }
 
-
-func (ms *MSDB) Query(query string, args ...interface{}) (*sql.Rows, error) {
-	return ms.db.Query(query, args...)
+func (ps *pdb) Query(ctx context.Context, sql string, args ...any) (pgx.Rows, error) {
+	return ps.pool.Query(ctx, sql, args...)
 }
 
-func (ms *MSDB) QueryRow(query string, args ...interface{}) *sql.Row {
-	return ms.db.QueryRow(query, args...)
+func (ps *pdb) QueryRow(ctx context.Context, sql string, args ...any) pgx.Row {
+	return ps.pool.QueryRow(ctx, sql, args...)
 }

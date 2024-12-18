@@ -14,6 +14,7 @@ import (
 	"github.com/gofiber/template/html/v2"
 	"github.com/mehmetkmrc/ator_gold/internal/adapter/secondary/config"
 	"github.com/mehmetkmrc/ator_gold/internal/core/port/auth"
+	"github.com/mehmetkmrc/ator_gold/internal/core/port/documenter"
 	"github.com/mehmetkmrc/ator_gold/internal/core/port/http"
 	"github.com/mehmetkmrc/ator_gold/internal/core/port/user"
 	"go.uber.org/zap"
@@ -37,6 +38,7 @@ type(
 		cfgFiber *fiber.Config
 		userService user.UserServicePort
 		tokenService auth.TokenMaker
+		documentService documenter.DocumentServicePort
 	}
 )
 
@@ -45,12 +47,14 @@ func NewHTTPServer(
 	cfg *config.Container,
 	userService user.UserServicePort,
 	tokenService auth.TokenMaker,
+	documentService documenter.DocumentServicePort,
 ) http.ServerMaker{
 	return &server{
 		ctx: ctx,
 		cfg: cfg,
 		userService: userService,
 		tokenService: tokenService,
+		documentService: documentService,
 	}
 }
 func (s *server) Start(ctx context.Context) error{
