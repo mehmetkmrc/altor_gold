@@ -21,7 +21,7 @@ func (s *server) LoginWeb(c fiber.Ctx) error {
 	path := "login"
 	return c.Render(path, fiber.Map{
 		"Title": "Login",
-	})
+	},"layouts/back-layout")
 }
 
 
@@ -29,21 +29,21 @@ func (s *server) HomeWeb(c fiber.Ctx) error {
 	path := "home"
 	return c.Render(path, fiber.Map{
 		"Title": "Ator Gold - Anasayfa",
-	})
+	},"layouts/main")
 }
 
 func (s *server) AboutWeb(c fiber.Ctx) error {
 	path := "about-us"
 	return c.Render(path, fiber.Map{
 		"Title": "Hakkımızda",
-	})
+	},"layouts/main")
 }
 
 func (s *server) ContactsWeb(c fiber.Ctx) error {
 	path := "contacts"
 	return c.Render(path, fiber.Map{
 		"Title": "İletişim",
-	})
+	},"layouts/main")
 }
 
 
@@ -51,7 +51,7 @@ func (s *server) ProductsListWeb(c fiber.Ctx) error {
 	path := "product-list"
 	return c.Render(path, fiber.Map{
 		"Title": "Ürün listesi",
-	})
+	},"layouts/main")
 }
 
 
@@ -60,7 +60,7 @@ func (s *server) AddProductWeb(c fiber.Ctx) error {
 	path := "add-product"
 	return c.Render(path, fiber.Map{
 		"Title": "Ürün Ekle",
-	})
+	},"layouts/main")
 }
 
 
@@ -155,7 +155,7 @@ func (s *server) ProductSingleWeb(c fiber.Ctx) error {
 		"Year":		year,
 		"FilteredDocuments": filteredDocuments,
 		"AllDocuments": mainDocs,
-	}, "")
+	},"layouts/main")
 	
 }
 

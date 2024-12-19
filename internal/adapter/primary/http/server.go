@@ -70,7 +70,7 @@ func (s *server) Start(ctx context.Context) error{
 		AppName: "ator_gold",
 		Immutable: true,
 		Views: engine,
-		ViewsLayout: "layouts/main",
+		//ViewsLayout: "layouts/main",
 		ErrorHandler: func(c fiber.Ctx, err error) error {
 			var e *fiber.Error
 			if errors.As(err, &e) {
