@@ -18,7 +18,7 @@ func (s *server) webSetUp() {
 	s.app.Get("/about-us", s.AboutWeb)
 	s.app.Get("/contacts", s.ContactsWeb)
 	s.app.Get("/products", s.ProductsListWeb)
-	s.app.Get("/product-single", s.ProductSingleWeb)
+	s.app.Get("/product-single/:man_id", s.ProductSingleWeb)
 	s.app.Get("/add-product", s.AddProductWeb)
 		
 	s.app.Get("/ping", func(c fiber.Ctx) error{

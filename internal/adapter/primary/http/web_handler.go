@@ -2,9 +2,12 @@ package http
 
 import (
 	"encoding/base64"
+	
+	"net/http"
 	"time"
 
 	"github.com/gofiber/fiber/v3"
+	"github.com/google/uuid"
 )
 
 
@@ -51,12 +54,7 @@ func (s *server) ProductsListWeb(c fiber.Ctx) error {
 	})
 }
 
-func (s *server) ProductSingleWeb(c fiber.Ctx) error {
-	path := "product-single"
-	return c.Render(path, fiber.Map{
-		"Title": "Tekli Ürün",
-	})
-}
+
 
 func (s *server) AddProductWeb(c fiber.Ctx) error {
 	path := "add-product"
@@ -64,6 +62,104 @@ func (s *server) AddProductWeb(c fiber.Ctx) error {
 		"Title": "Ürün Ekle",
 	})
 }
+
+
+
+
+
+func (s *server) ProductSingleWeb(c fiber.Ctx) error {
+	mainIDStr := c.Params("main_id")
+	mainID, err := uuid.Parse(mainIDStr)
+	if err != nil{
+		return s.errorResponse(c, "invalid main_id", err, nil, fiber.StatusBadRequest)
+	}
+
+	documents, err := s.documentService.GetAllDocumentsWithMainDocument(c.Context())
+	if err != nil {
+		return s.errorResponse(c, "error while trying to get all documents", err, nil, fiber.StatusBadRequest)
+	}
+
+	allDocuments, err := s.documentService.GetAllDocumentsWithMainDocument(c.Context())
+	if err != nil {
+		return s.errorResponse(c, "error while trying to get all documents", err, nil, fiber.StatusBadRequest)
+	}
+	var mainDocs []interface{}
+
+	
+
+	for _, document := range allDocuments {
+		mainDoc := map[string]interface{}{
+			"id": document.ID,
+			"title": document.MainTitle,
+		}
+		mainDocs = append(mainDocs, mainDoc)
+	}
+
+	var filteredDocuments []interface{}
+	//Sadece belirtilen main_id'ye ait belgeleri filtrele
+	for _, document := range documents{
+		if document.ID == mainID {
+			mainDoc := map[string]interface{}{
+				"id":		document.ID,
+				"title":	document.MainTitle,
+				"status":	document.Status,
+				"position":	document.Position,
+				"date":		document.Date,
+			}
+
+			var subDocs []interface{}
+			for _, subDoc := range document.SubDocuments{
+				var assets []string
+				for _, asset := range subDoc.Asset {
+					encodedAsset := "data:" + http.DetectContentType(asset) + ";base64," + encodeBase64(asset)
+					assets = append(assets, encodedAsset)
+				}
+
+				subDocument := map[string]interface{}{
+					"id":	subDoc.ID,
+					"main_id": subDoc.MainID,
+					"sub_title":	subDoc.SubTitle,
+					"product_code":	subDoc.ProductCode,
+					"sub_message": subDoc.SubMessage,
+					"asset": assets,
+					"status": subDoc.Status,
+					"date":	subDoc.Date,
+				}
+
+				var contentDocs []interface{}
+				for _, contentDoc := range subDoc.ContentDocuments {
+					contentDocument := map[string]interface{}{
+						"id":	contentDoc.ID,
+						"sub_id": contentDoc.SubID, 
+						"about_collection": contentDoc.ColText,
+						"jewellery_care": contentDoc.JewCare,
+						"position": contentDoc.Position,
+						"status": contentDoc.Status,
+						"date": contentDoc.Date,
+					}
+					contentDocs = append(contentDocs, contentDocument)
+				}
+				subDocument["ContentDocuments"] = contentDocs
+                subDocs = append(subDocs, subDocument)
+
+			}
+			mainDoc["SubDocuments"] = subDocs
+				filteredDocuments = append(filteredDocuments, mainDoc)
+				break // Sadece ilgili main_id yi al
+		}
+	}
+	path := "product-single"
+	return c.Render(path, fiber.Map{
+		"PageTitle": "Tekli Ürün",
+		"Title":	"Welcamo",
+		"Year":		year,
+		"FilteredDocuments": filteredDocuments,
+		"AllDocuments": mainDocs,
+	}, "")
+	
+}
+
+
 
 
 func (s *server) uploadHandler(c fiber.Ctx) error {
