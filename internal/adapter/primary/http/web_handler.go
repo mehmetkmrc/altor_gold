@@ -2,7 +2,8 @@ package http
 
 import (
 	"encoding/base64"
-	
+	"strings"
+
 	"net/http"
 	"time"
 
@@ -84,7 +85,7 @@ func (s *server) ProductSingleWeb(c fiber.Ctx) error {
 		return s.errorResponse(c, "error while trying to get all documents", err, nil, fiber.StatusBadRequest)
 	}
 	var mainDocs []interface{}
-
+	var title string // Title için değişken
 	
 
 	for _, document := range allDocuments {
@@ -99,6 +100,7 @@ func (s *server) ProductSingleWeb(c fiber.Ctx) error {
 	//Sadece belirtilen main_id'ye ait belgeleri filtrele
 	for _, document := range documents{
 		if document.ID == mainID {
+			title = strings.ToUpper(document.MainTitle) // Title'ı burada al
 			mainDoc := map[string]interface{}{
 				"id":		document.ID,
 				"title":	document.MainTitle,
@@ -151,7 +153,7 @@ func (s *server) ProductSingleWeb(c fiber.Ctx) error {
 	path := "product-single"
 	return c.Render(path, fiber.Map{
 		"PageTitle": "Tekli Ürün",
-		"Title":	"Welcamo",
+		"Title":	title,
 		"Year":		year,
 		"FilteredDocuments": filteredDocuments,
 		"AllDocuments": mainDocs,

@@ -1,16 +1,19 @@
+{{ range .FilteredDocuments }}
 <section class="page-title bg-transparent">
     <div class="container">
         <div class="page-title-row">
 
             <div class="page-title-content">
-                <h1>Pink Printed Dress</h1>
+                <h1>{{ .title }}</h1>
             </div>
 
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">Home</a></li>
                     <li class="breadcrumb-item"><a href="#">Shop</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Single Product</li>
+                    {{ range .SubDocuments }}
+                    <li class="breadcrumb-item active" aria-current="page">{{ .sub_title }}</li>
+                    {{ end }}
                 </ol>
             </nav>
 
@@ -33,60 +36,35 @@
                             <div class="product-image">
                                 <div class="fslider" data-pagi="false" data-arrows="false" data-thumbs="true">
                                     <div class="flexslider">
-
-                                        <div class="flex-viewport"
-                                            style="overflow: hidden; position: relative; height: 355.516px;">
-                                            <div class="slider-wrap" data-lightbox="gallery"
-                                                style="width: 1000%; transition-duration: 0s; transform: translate3d(-799px, 0px, 0px);">
-                                                <div class="slide clone" data-thumb="images/shop/thumbs/dress/3-2.jpg"
-                                                    aria-hidden="true"
-                                                    style="width: 266.656px; margin-right: 0px; float: left; display: block;">
-                                                    <a href="images/shop/dress/3-2.jpg"
-                                                        title="Pink Printed Dress - Back View" data-lightbox=""><img
-                                                            src="images/shop/dress/3-2.jpg" alt="Pink Printed Dress"
-                                                            draggable="false"></a></div>
-                                                <div class="slide" data-thumb="images/shop/thumbs/dress/3.jpg"
-                                                    style="width: 266.656px; margin-right: 0px; float: left; display: block;"
-                                                    data-thumb-alt=""><a href="images/shop/dress/3.jpg"
-                                                        title="Pink Printed Dress - Front View"
-                                                        data-lightbox="gallery-item"><img src="images/shop/dress/3.jpg"
-                                                            alt="Pink Printed Dress" draggable="false"></a></div>
-                                                <div class="slide" data-thumb="images/shop/thumbs/dress/3-1.jpg"
-                                                    data-thumb-alt=""
-                                                    style="width: 266.656px; margin-right: 0px; float: left; display: block;">
-                                                    <a href="/images/shop/dress/3-1.jpg"
-                                                        title="Pink Printed Dress - Side View"
-                                                        data-lightbox="gallery-item"><img
-                                                            src="/images/shop/dress/3-1.jpg" alt="Pink Printed Dress"
-                                                            draggable="false"></a></div>
-                                                <div class="slide flex-active-slide"
-                                                    data-thumb="/images/shop/thumbs/dress/3-2.jpg" data-thumb-alt=""
-                                                    style="width: 266.656px; margin-right: 0px; float: left; display: block;">
-                                                    <a href="/images/shop/dress/3-2.jpg"
-                                                        title="Pink Printed Dress - Back View"
-                                                        data-lightbox="gallery-item"><img
-                                                            src="/images/shop/dress/3-2.jpg" alt="Pink Printed Dress"
-                                                            draggable="false"></a></div>
-                                                <div class="slide clone" data-thumb="/images/shop/thumbs/dress/3.jpg"
-                                                    style="width: 266.656px; margin-right: 0px; float: left; display: block;"
-                                                    aria-hidden="true"><a href="/images/shop/dress/3.jpg"
-                                                        title="Pink Printed Dress - Front View" data-lightbox=""><img
-                                                            src="/images/shop/dress/3.jpg" alt="Pink Printed Dress"
-                                                            draggable="false"></a></div>
+                                        <div class="flex-viewport" style="overflow: hidden; position: relative;">
+                                            <div class="slider-wrap" data-lightbox="gallery">
+                                                <!-- Dinamik assetler buradan başlıyor -->
+                                                {{ range .SubDocuments }}
+                                                
+                                                <div class="slide" data-thumb="{{ .asset }}" style="width: 266.656px; margin-right: 0px; float: left; display: block;">
+                                                    <a href="{{ .asset }}" title="Asset View" data-lightbox="gallery-item">
+                                                        <img src="{{ .asset }}" alt="Product Image" draggable="false">
+                                                    </a>
+                                                </div>
+                                                
+                                                {{ end }}
+                                                <!-- Dinamik assetler burada bitiyor -->
                                             </div>
                                         </div>
                                         <ol class="flex-control-nav flex-control-thumbs">
-                                            <li><img src="/images/shop/thumbs/dress/3.jpg" class="" draggable="false">
-                                            </li>
-                                            <li><img src="/shop/thumbs/dress/3-1.jpg" draggable="false" class="">
-                                            </li>
-                                            <li><img src="/images/shop/thumbs/dress/3-2.jpg" draggable="false"
-                                                    class="flex-active"></li>
+                                            {{ range .SubDocuments }}
+                                            {{ range .asset }}
+                                            <li><img src="{{.}}" draggable="false" class=""></li>
+                                            {{ end }}
+                                            {{ end }}
                                         </ol>
                                     </div>
                                 </div>
                                 <div class="sale-flash badge bg-danger p-2">Sale!</div>
-                            </div><!-- Product Single - Gallery End -->
+                            </div>
+                            <!-- Product Single - Gallery End -->
+                            
+                            <!-- Product Single - Gallery End -->
 
                         </div>
 
@@ -130,13 +108,18 @@
 
                             <!-- Product Single - Short Description
                             ============================================= -->
-                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Libero velit id eaque ex quae
-                                laboriosam nulla optio doloribus! Perspiciatis, libero, neque, perferendis at nisi optio
-                                dolor!</p>
-                            <p>Perspiciatis ad eveniet ea quasi debitis quos laborum eum reprehenderit eaque explicabo
-                                assumenda rem modi.</p>
+                            {{ range .SubDocuments}}
+                                {{ range .ContentDocuments }}
+                                <p>{{ .about_collection }}</p><br>
+                                <p> {{ .jewellery_care }} </p>
+                                {{ end }}
+                            {{ end }}
+                            
+                            
                             <ul class="iconlist">
-                                <li><i class="fa-solid fa-caret-right"></i> Dynamic Color Options</li>
+                                {{ range .SubDocuments}}
+                                <li><i class="fa-solid fa-caret-right"></i> {{ .sub_message }}</li>
+                                {{ end }}
                                 <li><i class="fa-solid fa-caret-right"></i> Lots of Size Options</li>
                                 <li><i class="fa-solid fa-caret-right"></i> 30-Day Return Policy</li>
                             </ul><!-- Product Single - Short Description End -->
@@ -145,8 +128,13 @@
                             ============================================= -->
                             <div class="card product-meta">
                                 <div class="card-body">
+                                    
                                     <span itemprop="productID" class="sku_wrapper">SKU: <span
-                                            class="sku">8465415</span></span>
+                                            class="sku">
+                                            {{ range .SubDocuments}}
+                                            {{ .product_code }}
+                                            {{ end }}
+                                        </span></span>
                                     <span class="posted_in">Category: <a href="#" rel="tag">Dress</a>.</span>
                                     <span class="tagged_as">Tags: <a href="#" rel="tag">Pink</a>, <a href="#"
                                             rel="tag">Short</a>, <a href="#" rel="tag">Dress</a>, <a href="#"
@@ -745,3 +733,4 @@
         </div>
     </div>
 </section>
+{{ end }}
